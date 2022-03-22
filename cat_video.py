@@ -10,12 +10,12 @@ def parse_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     for i in range(1, 6):
         parser.add_argument(f'-i{i}', f'--input{i}', type=str, help='input video {i}')
-        parser.add_argument(f'-c{i}', f'--crop{i}', type=str, help='crop {i} usage: -c{i} w:h:x:y')
-        parser.add_argument(f'-s{i}', f'--scale{i}', type=str, help='scale {i} usage: -s{i} w:h')
+        parser.add_argument(f'-c{i}', f'--crop{i}', type=str, help='crop {i} usage: -c{i} w:h:x:y', default=None)
+        parser.add_argument(f'-s{i}', f'--scale{i}', type=str, help='scale {i} usage: -s{i} w:h', default=None)
     parser.add_argument('-m', '--map', type=str, help='mapping')
     parser.add_argument('-v', '--vertical', help='vertical mode', action='store_true')
     parser.add_argument('-y', '--override', help='yes if override', action='store_true')
-    parser.add_argument('-o', '--output', type=str, help='output file name (default= output.mp4)', default='output.mp4')
+    parser.add_argument('-o', '--output', type=str, help='output file name (default = output.mp4)', default='output.mp4')
     return parser.parse_args()
 
 
@@ -114,6 +114,7 @@ def main():
         cmd += '-y '
     for i in range(len(ls)):
         cmd += f'-i {ls[i]} '
+    cmd += '-q:v 2 '
     cmd += '-filter_complex "'
 
     index = width + 1
