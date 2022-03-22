@@ -23,7 +23,7 @@ def parse_args():
         'replace video audio from input audio file usage: '
         'python dumpper.py -i video.mp4 -o results/video.mp4 -ia audio.aac --replace_audio'
     ), action='store_true')
-    parser.add_argument('-f', '--fps', type=int, help='fps rate (-1 to use default)', default=-1)
+    parser.add_argument('-f', '--fps', help='fps rate (-1 to use default)', default=-1)
     parser.add_argument('-q', '--dump_quality', type=int, help=(
         'dump quality for jpg (normal range is 2-31 31 is worst)'), default=2)
     return parser.parse_args()
@@ -46,7 +46,7 @@ def main():
         output = f' {output}'
         if args.dump_quality > 0:
             output = f' -q:v {args.dump_quality} {output}'
-        if fps > 0:
+        if float(fps) > 0:
             output = f' -vf "fps={fps}"{output}'
     elif args.dump_audio:
         print('dump audio...')
