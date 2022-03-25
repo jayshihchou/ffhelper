@@ -56,9 +56,9 @@ def main():
         cmd += f' -vf fps={args.fps} '
 
     cmd += f'{args.output}'
-    print(f'========= append_video run: {cmd}')
+    print(f'========= video_from_images run: {cmd}')
     os.system(cmd)
-    print(f'========= append_video done: {cmd}\n (If you running into error \"matches no streams\" try add --no_audio.\n  Currently it only works when videos are same resolution)')
+    print(f'========= video_from_images done: {cmd}')
     if temp_path is not None:
         os.remove(temp_path)
 
