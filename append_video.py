@@ -1,6 +1,5 @@
 import argparse
 import os
-import subprocess
 
 
 max_input = 16 + 1
@@ -48,7 +47,6 @@ def main():
     cmd += f'{args.output}'
     print(f'========= append_video run: {cmd}')
     os.system(cmd)
-    # subprocess.check_output(cmd.split(' '))
     print(f'========= append_video done: {cmd}\n (If you running into error \"matches no streams\" try add --no_audio.\n  Currently it only works when videos are same resolution)')
 
 
