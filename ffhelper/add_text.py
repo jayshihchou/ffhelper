@@ -1,12 +1,14 @@
 import argparse
 import os
-
+from typing import Union
 
 max_input = 16 + 1
 
 
-def parse_args():
+def parse_args(additional: bool = False) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
+    if additional:
+        parser.add_argument('COMMAND', help='command to use')
     parser.add_argument('-i', '--input', type=str, help='input video', required=True)
     parser.add_argument('-y', '--override', help='yes if override', action='store_true')
     parser.add_argument('-o', '--output', type=str, help='output file name (default= output.mp4)', default='output.mp4')
@@ -32,7 +34,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def parse_text(args: argparse.ArgumentParser, i: int):
+def parse_text(args: argparse.ArgumentParser, i: int) -> Union[None, str]:
     if args.__dict__[f'text{i}'] is None:
         return None
 
@@ -84,8 +86,8 @@ def parse_text(args: argparse.ArgumentParser, i: int):
     return text_cmd
 
 
-def main():
-    args = parse_args()
+def main(additional: bool = False):
+    args = parse_args(additional)
 
     path = args.input
 

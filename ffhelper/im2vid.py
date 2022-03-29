@@ -1,38 +1,42 @@
 import argparse
-import os
 import glob
+import os
+from pathlib import Path
 from typing import List
 
 
-def parse_args():
+def parse_args(additional: bool = False) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
+    if additional:
+        parser.add_argument('COMMAND', help='command to use')
     parser.add_argument('-i', '--input', type=str, help='input image path')
     parser.add_argument('--format', type=str, help=(
         'input image format:',
-        'eg: python video_from_images.py -i images/ -f %05d.jpg'
+        'eg: python -m ffhelper im2vid -i images/ -f %05d.jpg'
     ), default=None)
     parser.add_argument('-im', '--img_format', type=str, help='image format (default is jpg). Ignored when --format is provided.', default='.jpg')
     parser.add_argument('-y', '--override', help='yes if override', action='store_true')
     parser.add_argument('-o', '--output', type=str, help='output file name (default= output.mp4)', default='output.mp4')
     parser.add_argument('-f', '--fps', help='fps rate (-1 to use default)', default=-1)
+
     return parser.parse_args()
 
 
-def make_temp_file_list(ls: List[str]):
+def make_temp_file_list(ls: List[str]) -> str:
     ls = [f"file '{x}'\n" for x in ls]
-    temp_path = 'video_from_images_temp.txt'
+    filepath = Path(__file__)
+    temp_path = filepath.parent / 'video_from_images_temp.txt'
     with open(temp_path, 'w') as f:
         f.writelines(ls)
     return temp_path
 
 
-def main():
-    args = parse_args()
+def main(additional: bool = False):
+    args = parse_args(additional)
 
     path = args.input
     if args.format is not None:
         path = os.path.join(path, args.format)
-        file = None
     else:
         search_glob = os.path.join(path, f'*{args.img_format}')
         ls = glob.glob(os.path.join(path, f'*{args.img_format}'))

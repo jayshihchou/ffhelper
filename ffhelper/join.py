@@ -1,12 +1,13 @@
 import argparse
 import os
 
-
 max_input = 16 + 1
 
 
-def parse_args():
+def parse_args(additional: bool = False) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
+    if additional:
+        parser.add_argument('COMMAND', help='command to use')
     for i in range(1, max_input):
         parser.add_argument(f'-i{i}', f'--input{i}', type=str, help='input video {i}')
         # parser.add_argument(f'-c{i}', f'--crop{i}', type=str, help='crop {i} usage: -c{i} w:h:x:y')
@@ -17,8 +18,8 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    args = parse_args()
+def main(additional: bool = False):
+    args = parse_args(additional)
     no_audio = args.no_audio
     ls = []
     for i in range(1, max_input):

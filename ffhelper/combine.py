@@ -1,14 +1,17 @@
 import argparse
 import os
-from typing import List, Tuple
-
+from typing import Dict, List, Tuple
 
 name_tag = '0123456789abcdefghijklmnopqrstuvwxyz'
+max_input = 16 + 1
 
 
-def parse_args() -> argparse.ArgumentParser:
+def parse_args(additional: bool = False) -> argparse.ArgumentParser:
+    global max_input
     parser = argparse.ArgumentParser()
-    for i in range(1, 6):
+    if additional:
+        parser.add_argument('COMMAND', help='command to use')
+    for i in range(1, max_input):
         parser.add_argument(f'-i{i}', f'--input{i}', type=str, help='input video {i}')
         parser.add_argument(f'-c{i}', f'--crop{i}', type=str, help='crop {i} usage: -c{i} w:h:x:y', default=None)
         parser.add_argument(f'-s{i}', f'--scale{i}', type=str, help='scale {i} usage: -s{i} w:h', default=None)
@@ -19,7 +22,7 @@ def parse_args() -> argparse.ArgumentParser:
     return parser.parse_args()
 
 
-def parse_map_index(s: str):
+def parse_map_index(s: str) -> Dict:
     res = []
     if '+' in s:
         plus_ls = s.split('+')
@@ -36,7 +39,7 @@ def parse_map_index(s: str):
     return res
 
 
-def parse_map(mapping: str):
+def parse_map(mapping: str) -> List[str]:
     res = []
     for each in mapping.split(','):
         res.append(parse_map_index(each))
@@ -44,7 +47,7 @@ def parse_map(mapping: str):
     return res
 
 
-def video_to_str(m: dict, args: argparse.ArgumentParser, tag_name: str, width: int = None, vertical: bool = False):
+def video_to_str(m: dict, args: argparse.ArgumentParser, tag_name: str, width: int = None, vertical: bool = False) -> str:
     v = m['v']
     mcmd = f'[{v}:v]setpts=PTS-STARTPTS'
     v += 1
@@ -86,11 +89,11 @@ def map_to_str(map_ls: List[dict], args: argparse.ArgumentParser, index: int) ->
     return mcmd, last_tag, index
 
 
-def main():
-    global name_tag
-    args = parse_args()
+def main(additional: bool = False):
+    global name_tag, max_input
+    args = parse_args(additional)
     ls = []
-    for i in range(1, 6):
+    for i in range(1, max_input):
         if args.__dict__[f'input{i}'] is not None:
             ls.append(args.__dict__[f'input{i}'])
 
