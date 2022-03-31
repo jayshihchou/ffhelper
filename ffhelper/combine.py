@@ -109,6 +109,10 @@ def main(additional: bool = False):
                 else:
                     mapping += f', {i}'
 
+        if len(mapping) == 0:
+            print('Need video input to run... (-h/--help to see more options)')
+            exit()
+
     mapping = parse_map(mapping)
 
     width = len(mapping)
