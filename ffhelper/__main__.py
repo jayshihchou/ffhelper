@@ -1,4 +1,5 @@
 from .cli import main
 
 
-main()
+def run():
+    main()
