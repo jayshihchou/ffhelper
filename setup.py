@@ -1,4 +1,3 @@
-from importlib.metadata import entry_points
 import runpy
 
 from setuptools import setup
