@@ -120,7 +120,7 @@ def main(additional: bool = False):
     if args.override:
         cmd += '-y '
     for i in range(len(ls)):
-        cmd += f'-i {ls[i]} '
+        cmd += f'-i "{ls[i]}" '
     cmd += '-q:v 2 '
     cmd += '-filter_complex "'
 
