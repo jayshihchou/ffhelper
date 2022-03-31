@@ -1,6 +1,7 @@
-output.mp4
 *.txt
 *.mp4
 results/
 ffhelper/__pycache__
+docker/
 dist/
+scripts/
