@@ -9,12 +9,12 @@ def parse_args(additional: bool = False) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     if additional:
         parser.add_argument('COMMAND', help='command to use')
-    parser.add_argument('-i', '--input', type=str, help='input image path')
+    parser.add_argument('-i', '--input', type=str, help='input image path', required=True)
     parser.add_argument('--format', type=str, help=(
-        'input image format:',
+        'ffmpeg mode input image format:',
         'eg: python -m ffhelper im2vid -i images/ -f %05d.jpg'
     ), default=None)
-    parser.add_argument('-im', '--img_format', type=str, help='image format (default is jpg). Ignored when --format is provided.', default='.jpg')
+    parser.add_argument('-im', '--img_format', type=str, help='glob mode image format (default is jpg). Ignored when --format is provided.', default='.jpg')
     parser.add_argument('-y', '--override', help='yes if override', action='store_true')
     parser.add_argument('-o', '--output', type=str, help='output file name (default= output.mp4)', default='output.mp4')
     parser.add_argument('-f', '--fps', help='fps rate (-1 to use default)', default=-1)
