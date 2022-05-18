@@ -10,4 +10,4 @@ sudo docker cp build_ffhelper:/app/dist ./
 sudo docker rm -f build_ffhelper
 
 python3 -m pip install --upgrade twine
-python3 -m twine upload ./dist/ffhelper*.whl
+python3 -m twine upload ./dist/ffhelper*.whl --verbose

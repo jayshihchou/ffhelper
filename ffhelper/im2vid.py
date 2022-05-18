@@ -37,6 +37,7 @@ def main(additional: bool = False):
     path = args.input
     if args.format is not None:
         path = os.path.join(path, args.format)
+        temp_path = None
     else:
         search_glob = os.path.join(path, f'*{args.img_format}')
         ls = glob.glob(os.path.join(path, f'*{args.img_format}'))
