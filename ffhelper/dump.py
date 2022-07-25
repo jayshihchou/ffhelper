@@ -2,37 +2,42 @@ import argparse
 import os
 
 
-def parse_args(additional: bool = False) -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser()
-    if additional:
-        parser.add_argument('COMMAND', help='command to use')
+def parse_args(subparser: argparse._SubParsersAction = None) -> argparse.ArgumentParser:
+    parser = subparser.add_parser('dump') if subparser is not None else argparse.ArgumentParser()
+
     parser.add_argument('-i', '--input', type=str, help='input video file', required=True)
     parser.add_argument('-ia', '--input_audio', type=str, help='input audio file')
     parser.add_argument('-o', '--output', type=str, help='output folder (default is ./results/)', default='./results/')
     parser.add_argument('-di', '--dump_image', help=(
         'dump image mode usage: '
-        'python -m ffhelper dump -i video.mp4 -o dump/images/ --dump_image'
+        'ffhelper dump -i video.mp4 -o dump/images/ --dump_image'
     ), action='store_true')
     parser.add_argument('-da', '--dump_audio', help=(
         'dump audio mode usage: '
-        'python -m ffhelper dump -i video.mp4 -o dump/audio.aac --dump_audio'
+        'ffhelper dump -i video.mp4 -o dump/audio.aac --dump_audio'
     ), action='store_true')
     parser.add_argument('-dm', '--dump_meta', help=(
         'dump metadata mode usage: '
-        'python -m ffhelper dump -i video.mp4 -o dump/metadata.txt --dump_meta'
+        'ffhelper dump -i video.mp4 -o dump/metadata.txt --dump_meta'
     ), action='store_true')
     parser.add_argument('-ra', '--replace_audio', help=(
         'replace video audio from input audio file usage: '
-        'python -m ffhelper dump -i video.mp4 -o results/video.mp4 -ia audio.aac --replace_audio'
+        'ffhelper dump -i video.mp4 -o results/video.mp4 -ia audio.aac --replace_audio'
     ), action='store_true')
     parser.add_argument('-f', '--fps', help='fps rate (-1 to use default)', default=-1)
     parser.add_argument('-q', '--dump_quality', type=int, help=(
         'dump quality for jpg (normal range is 2-31, 31 is worst)'), default=2)
-    return parser.parse_args()
+    if subparser is None:
+        return parser.parse_args()
+
+    parser.set_defaults(func=main)
+
+    return None
 
 
-def main(additional: bool = False):
-    args = parse_args(additional)
+def main(args: argparse.Namespace = None) -> None:
+    if args is None:
+        args = parse_args()
     cmd = f'ffmpeg -i {args.input}'
     if args.input_audio is not None:
         cmd += f' -i {args.input_audio}'

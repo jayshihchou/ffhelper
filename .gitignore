@@ -4,3 +4,4 @@ output.mp4
 results/
 ffhelper/__pycache__
 dist/
+ffhelper.egg-info

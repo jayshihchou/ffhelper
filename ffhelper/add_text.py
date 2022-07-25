@@ -5,10 +5,8 @@ from typing import Union
 max_input = 16 + 1
 
 
-def parse_args(additional: bool = False) -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser()
-    if additional:
-        parser.add_argument('COMMAND', help='command to use')
+def parse_args(subparser: argparse._SubParsersAction = None) -> argparse.ArgumentParser:
+    parser = subparser.add_parser('add_text') if subparser is not None else argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, help='input video', required=True)
     parser.add_argument('-y', '--override', help='yes if override', action='store_true')
     parser.add_argument('-o', '--output', type=str, help='output file name (default= output.mp4)', default='output.mp4')
@@ -31,7 +29,12 @@ def parse_args(additional: bool = False) -> argparse.ArgumentParser:
     parser.add_argument('-ba', '--background_alpha', type=float, help='set all default background alpha float value [0.0 ~ 1.0]', default=1.0)
     parser.add_argument('-bb', '--background_border', type=str, help='set all default background border size', default=5)
 
-    return parser.parse_args()
+    if subparser is None:
+        return parser.parse_args()
+
+    parser.set_defaults(func=main)
+
+    return None
 
 
 def parse_text(args: argparse.ArgumentParser, i: int) -> Union[None, str]:
@@ -86,8 +89,9 @@ def parse_text(args: argparse.ArgumentParser, i: int) -> Union[None, str]:
     return text_cmd
 
 
-def main(additional: bool = False):
-    args = parse_args(additional)
+def main(args: argparse.Namespace = None):
+    if args is None:
+        args = parse_args()
 
     path = args.input
 

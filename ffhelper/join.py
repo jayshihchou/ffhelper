@@ -4,22 +4,26 @@ import os
 max_input = 16 + 1
 
 
-def parse_args(additional: bool = False) -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser()
-    if additional:
-        parser.add_argument('COMMAND', help='command to use')
+def parse_args(subparser: argparse._SubParsersAction = None) -> argparse.ArgumentParser:
+    parser = subparser.add_parser('join') if subparser is not None else argparse.ArgumentParser()
+
     for i in range(1, max_input):
         parser.add_argument(f'-i{i}', f'--input{i}', type=str, help='input video {i}')
-        # parser.add_argument(f'-c{i}', f'--crop{i}', type=str, help='crop {i} usage: -c{i} w:h:x:y')
-        # parser.add_argument(f'-s{i}', f'--scale{i}', type=str, help='scale {i} usage: -s{i} w:h')
     parser.add_argument('-y', '--override', help='yes if override', action='store_true')
     parser.add_argument('-o', '--output', type=str, help='output file name (default= output.mp4)', default='output.mp4')
     parser.add_argument('--no_audio', help='yes if no audio', action='store_true')
-    return parser.parse_args()
+
+    if subparser is None:
+        return parser.parse_args()
+
+    parser.set_defaults(func=main)
+
+    return None
 
 
-def main(additional: bool = False):
-    args = parse_args(additional)
+def main(args: argparse.Namespace = None):
+    if args is None:
+        args = parse_args()
     no_audio = args.no_audio
     ls = []
     for i in range(1, max_input):

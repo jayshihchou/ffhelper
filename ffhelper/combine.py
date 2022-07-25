@@ -6,11 +6,9 @@ name_tag = '0123456789abcdefghijklmnopqrstuvwxyz'
 max_input = 16 + 1
 
 
-def parse_args(additional: bool = False) -> argparse.ArgumentParser:
+def parse_args(subparser: argparse._SubParsersAction = None) -> argparse.ArgumentParser:
     global max_input
-    parser = argparse.ArgumentParser()
-    if additional:
-        parser.add_argument('COMMAND', help='command to use')
+    parser = subparser.add_parser('combine') if subparser is not None else argparse.ArgumentParser()
     for i in range(1, max_input):
         parser.add_argument(f'-i{i}', f'--input{i}', type=str, help='input video {i}')
         parser.add_argument(f'-c{i}', f'--crop{i}', type=str, help='crop {i} usage: -c{i} w:h:x:y', default=None)
@@ -19,7 +17,12 @@ def parse_args(additional: bool = False) -> argparse.ArgumentParser:
     parser.add_argument('-v', '--vertical', help='vertical mode', action='store_true')
     parser.add_argument('-y', '--override', help='yes if override', action='store_true')
     parser.add_argument('-o', '--output', type=str, help='output file name (default = output.mp4)', default='output.mp4')
-    return parser.parse_args()
+    if subparser is None:
+        return parser.parse_args()
+
+    parser.set_defaults(func=main)
+
+    return None
 
 
 def parse_map_index(s: str) -> Dict:
@@ -89,9 +92,10 @@ def map_to_str(map_ls: List[dict], args: argparse.ArgumentParser, index: int) ->
     return mcmd, last_tag, index
 
 
-def main(additional: bool = False):
+def main(args: argparse.Namespace = None):
     global name_tag, max_input
-    args = parse_args(additional)
+    if args is None:
+        args = parse_args()
     ls = []
     for i in range(1, max_input):
         if args.__dict__[f'input{i}'] is not None:

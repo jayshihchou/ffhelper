@@ -1,53 +1,41 @@
+import argparse
 import sys
 
-from ffhelper import __version__, add_text, combine, dump, im2vid, join
+from ffhelper.__version__ import __version__
+from ffhelper import _parse_args_add_text, _parse_args_combine, _parse_args_dump, _parse_args_im2vid, _parse_args_join
 
 
-def print_help():
-    print(
-        'Usage: python -m ffhelper [COMMAND] [OPTIONS]'
-        '\n\nCommands:'
+def main():
+    parse_func_list = [
+        _parse_args_add_text,
+        _parse_args_combine,
+        _parse_args_dump,
+        _parse_args_im2vid,
+        _parse_args_join,
+    ]
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+
+    parser.add_argument('-v', '--version', action='store_true', help='print_version')
+    subparser = parser.add_subparsers(help=(
+        'commands:'
         '\n    combine           combine videos'
         '\n    join              join videos'
         '\n    dump              dump images/audio/metadata or replace audio'
         '\n    im2vid            make video from image folder'
         '\n    add_text          adding label into video'
-        '\n    -v, --version     show version'
-        '\n adding command to see more help info'
-    )
+    ))
 
+    for f in parse_func_list:
+        f(subparser)
 
-def main():
-    cmds = {
-        'combine': combine,
-        'join': join,
-        'dump': dump,
-        'im2vid': im2vid,
-        'add_text': add_text,
-    }
-    if len(sys.argv) == 1:
-        print('Need to provide method to use.')
-        print_help()
-        exit()
-    if sys.argv[1] == '-h' or sys.argv[1] == '--help':
-        print_help()
-        exit()
-    if sys.argv[1] == '-v' or sys.argv[1] == '--version':
+    args = parser.parse_args()
+    
+    if 'func' in args:
+        args.func(args)
+    elif args.version:
         print('ffhelper', __version__)
-        exit()
-    all_not_in_cmd = True
-    cmd = None
-    for i in range(1, len(sys.argv)):
-        cmd = sys.argv[i]
-        if cmd in cmds:
-            all_not_in_cmd = False
-            break
-    if all_not_in_cmd:
-        print('No method named:', sys.argv[1])
-        print_help()
-        exit()
-
-    cmds[sys.argv[1]].main(True)
+    else:
+        parser.print_usage()
 
 
 if __name__ == '__main__':
